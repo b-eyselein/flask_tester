@@ -127,6 +127,8 @@ def load_tests() -> Tuple[str, str, List[WebTestConfig]]:
         return json["testFileName"], json["testClassName"], web_test_configs
 
 
+print("Running main function")
+
 if __name__ == "__main__":
 
     if not test_config_file_path.exists():
@@ -143,3 +145,5 @@ if __name__ == "__main__":
 
     with result_file_path.open("w") as result_file:
         json_dump([r.__dict__ for r in results], result_file, indent=2)
+
+print("Finished")

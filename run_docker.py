@@ -11,6 +11,8 @@ class BindMount(Mount):
         super().__init__(source=str(source.absolute()), target=target, read_only=read_only, type="bind")
 
 
+max_runtime_seconds: int = 30
+
 build_image: bool = True
 
 tester_image_name: str = "flask_tester"
@@ -54,23 +56,11 @@ tester_container: Container = client.containers.run(
     detach=True,
 )
 
-run_cmd: str = f"""\
-docker run -it --rm \\
-    -v {result_file_path}:/data/result.json \\
-    -v {server_logs_file_path}:/data/server_logs.txt \\
-    -v {exercise_path}/app:/data/app:ro \\
-    -v {exercise_path}/test_config.json:/data/test_config.json:ro \\
-    -v {exercise_path}/test_login.py:/data/test_login.py:ro \\
-    {tester_image_name}
-"""
-
-print(run_cmd)
-
 # stop and remove tester container
-tester_container.stop()
+tester_container.wait(timeout=max_runtime_seconds)
 
 with tester_logs_file_path.open("w") as tester_logs_file:
     tester_logs_file.write(tester_container.logs().decode())
 
-#if client.containers.get(tester_container.id):
-#    tester_container.remove()
+if client.containers.get(tester_container.id):
+    tester_container.remove()

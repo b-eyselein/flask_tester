@@ -12,4 +12,4 @@ RUN apk update && apk upgrade && \
 
 COPY entrypoint.sh flask_test_executor.py $WORKDIR
 
-ENTRYPOINT ["./entrypoint.sh"]
+ENTRYPOINT ["/bin/bash", "./entrypoint.sh"]
