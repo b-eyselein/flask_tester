@@ -1,0 +1,33 @@
+{
+  "testFileName": "test_login",
+  "testClassName": "MyTest",
+  "tests": [
+    {
+      "testName": "redirect_to_login_test",
+      "testFunctionName": "t_1_redirect_to_login"
+    },
+    {
+      "testName": "register_form_test",
+      "testFunctionName": "t_2_register_form"
+    },
+    {
+      "testName": "register_func_test",
+      "testFunctionName": "t_3_register_functionality",
+      "dependencies": ["register_form_test"]
+    },
+    {
+      "testName": "login_form_test",
+      "testFunctionName": "t_4_login_form"
+    },
+    {
+      "testName": "login_func_test",
+      "testFunctionName": "t_5_login_functionality",
+      "dependencies": ["login_form_test"]
+    },
+    {
+      "testName": "index_test",
+      "testFunctionName": "test_index",
+      "dependencies": ["login_func_test"]
+    }
+  ]
+}

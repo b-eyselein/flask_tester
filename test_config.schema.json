@@ -1,0 +1,30 @@
+{
+  "type": "object",
+  "properties": {
+    "testFileName": {"type": "string"},
+    "testClassName": {"type": "string"},
+    "tests": {
+      "type": "array",
+      "items": {"$ref": "#/definitions/WebTestConfig"},
+      "additionalItems": false
+    }
+  },
+  "required": ["testFileName", "testClassName", "tests"],
+  "additionalProperties": false,
+  "definitions": {
+    "WebTestConfig": {
+      "type": "object",
+      "properties": {
+        "testName": {"type": "string"},
+        "testFunctionName": {"type": "string"},
+        "dependencies": {
+          "type": "array",
+          "items": {"type": "string"},
+          "additionalItems": false
+        }
+      },
+      "required": ["testName", "testFunctionName"],
+      "additionalProperties": false
+    }
+  }
+}

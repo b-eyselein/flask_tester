@@ -1,0 +1,9 @@
+# server
+flask
+bcrypt
+
+# test
+selenium
+
+# execution
+docker
