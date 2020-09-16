@@ -10,7 +10,7 @@ sleep 1
 # run tester
 cd .. || exit
 
-python flask_test_executor.py
+timeout -s KILL 30 python flask_test_executor.py
 
 # stop server (background job)
 kill %1

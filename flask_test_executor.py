@@ -12,8 +12,8 @@ result_file_path: Path = Path.cwd() / "result.json"
 
 
 class WebTestConfigJson(TypedDict):
+    maxPoints: int
     testName: str
-    testFunctionName: str
     dependencies: Optional[List[str]]
 
 
@@ -32,8 +32,8 @@ class TestStatus(Enum):
 
 @dataclass()
 class WebTestConfig:
+    max_points: int
     test_name: str
-    test_function_name: str
     status: TestStatus = TestStatus.Ready
 
     dependencies: List["WebTestConfig"] = field(default_factory=list)
@@ -59,6 +59,7 @@ class WebTestConfig:
 
 @dataclass()
 class WebTestResult:
+    max_points: int
     test_name: str
     successful: bool
     stdout: List[str]
@@ -66,6 +67,7 @@ class WebTestResult:
 
     def to_json(self) -> Dict:
         return {
+            "maxPoints": self.max_points,
             "testName": self.test_name,
             "successful": self.successful,
             "stdout": self.stdout,
@@ -82,7 +84,7 @@ def execute_tests(test_file_name: str, test_class_name: str, tests: List[WebTest
         current_test: WebTestConfig = runnable_tests.pop()
 
         # execute tests
-        cmd: List[str] = [f"python3 -m unittest {test_file_name}.{test_class_name}.{current_test.test_function_name}"]
+        cmd: List[str] = [f"python3 -m unittest {test_file_name}.{test_class_name}.{current_test.test_name}"]
 
         result: CompletedProcess = subprocess_run(cmd, shell=True, capture_output=True)
 
@@ -90,6 +92,7 @@ def execute_tests(test_file_name: str, test_class_name: str, tests: List[WebTest
 
         results.append(
             WebTestResult(
+                max_points=current_test.max_points,
                 test_name=current_test.test_name,
                 successful=successful,
                 stdout=result.stdout.decode().split("\n"),
@@ -120,8 +123,8 @@ def load_tests() -> Tuple[str, str, List[WebTestConfig]]:
         for test_config_json in json["tests"]:
             web_test_configs.append(
                 WebTestConfig(
+                    max_points=test_config_json["maxPoints"],
                     test_name=test_config_json["testName"],
-                    test_function_name=test_config_json["testFunctionName"],
                     dependencies=[
                         t_x for t_x in web_test_configs if t_x.test_name in test_config_json.get("dependencies", [])
                     ],
@@ -141,7 +144,7 @@ if __name__ == "__main__":
 
     shuffle(web_tests)
 
-    results = execute_tests(test_file_name, test_class_name, web_tests)
+    all_results = execute_tests(test_file_name, test_class_name, web_tests)
 
     with result_file_path.open("w") as result_file:
-        json_dump([r.to_json() for r in results], result_file, indent=2)
+        json_dump({"results": [r.to_json() for r in all_results]}, result_file, indent=2)

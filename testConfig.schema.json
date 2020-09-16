@@ -15,15 +15,15 @@
     "WebTestConfig": {
       "type": "object",
       "properties": {
+        "maxPoints": {"type": "number"},
         "testName": {"type": "string"},
-        "testFunctionName": {"type": "string"},
         "dependencies": {
           "type": "array",
           "items": {"type": "string"},
           "additionalItems": false
         }
       },
-      "required": ["testName", "testFunctionName"],
+      "required": ["maxPoints", "testName"],
       "additionalProperties": false
     }
   }

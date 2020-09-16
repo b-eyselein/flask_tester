@@ -20,18 +20,13 @@ exercise_name: str = "login"
 result_file_name: str = "result.json"
 
 exercise_path: Path = Path.cwd() / exercise_name
-results_path: Path = Path.cwd() / "results"
-
-result_file_path: Path = results_path / result_file_name
-tester_logs_file_path: Path = results_path / "tester_logs.txt"
-server_logs_file_path: Path = results_path / "server_logs.txt"
+result_file_path: Path = Path.cwd() / "results" / result_file_name
 
 # clear result and logs files
-for file_path in [result_file_path, tester_logs_file_path, server_logs_file_path]:
-    if file_path.exists():
-        file_path.unlink()
+if result_file_path.exists():
+    result_file_path.unlink()
 
-    file_path.touch()
+result_file_path.touch()
 
 # running...
 client: DockerClient = docker_client_from_env()
@@ -48,9 +43,8 @@ tester_container: Container = client.containers.run(
     image=tester_image_name,
     mounts=[
         BindMount(source=result_file_path, target=f"/data/{result_file_name}"),
-        BindMount(source=server_logs_file_path, target=f"/data/server_logs.txt"),
         BindMount(source=exercise_path / "app", target=f"/data/app", read_only=True),
-        BindMount(source=exercise_path / "test_config.json", target="/data/test_config.json", read_only=True),
+        BindMount(source=exercise_path / "testConfig.json", target="/data/testConfig.json", read_only=True),
         BindMount(source=exercise_path / "test_login.py", target="/data/test_login.py", read_only=True),
     ],
     detach=True,
@@ -58,9 +52,6 @@ tester_container: Container = client.containers.run(
 
 # stop and remove tester container
 tester_container.wait(timeout=max_runtime_seconds)
-
-with tester_logs_file_path.open("w") as tester_logs_file:
-    tester_logs_file.write(tester_container.logs().decode())
 
 if client.containers.get(tester_container.id):
     tester_container.remove()
