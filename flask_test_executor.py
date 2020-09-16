@@ -1,13 +1,13 @@
 from dataclasses import dataclass, field
 from enum import Enum
 from json import load as json_load, dump as json_dump
-from sys import stderr
 from pathlib import Path
 from random import shuffle
 from subprocess import run as subprocess_run, CompletedProcess
-from typing import List, TypedDict, Tuple, Optional
+from sys import stderr
+from typing import List, TypedDict, Tuple, Optional, Dict
 
-test_config_file_path: Path = Path.cwd() / "test_config.json"
+test_config_file_path: Path = Path.cwd() / "testConfig.json"
 result_file_path: Path = Path.cwd() / "result.json"
 
 
@@ -61,9 +61,16 @@ class WebTestConfig:
 class WebTestResult:
     test_name: str
     successful: bool
-    cli_cmd: str
     stdout: List[str]
     stderr: List[str]
+
+    def to_json(self) -> Dict:
+        return {
+            "testName": self.test_name,
+            "successful": self.successful,
+            "stdout": self.stdout,
+            "stderr": self.stderr
+        }
 
 
 def execute_tests(test_file_name: str, test_class_name: str, tests: List[WebTestConfig]) -> List[WebTestResult]:
@@ -77,8 +84,6 @@ def execute_tests(test_file_name: str, test_class_name: str, tests: List[WebTest
         # execute tests
         cmd: List[str] = [f"python3 -m unittest {test_file_name}.{test_class_name}.{current_test.test_function_name}"]
 
-        print(f"Running test {cmd}")
-
         result: CompletedProcess = subprocess_run(cmd, shell=True, capture_output=True)
 
         successful: bool = result.returncode == 0
@@ -87,7 +92,6 @@ def execute_tests(test_file_name: str, test_class_name: str, tests: List[WebTest
             WebTestResult(
                 test_name=current_test.test_name,
                 successful=successful,
-                cli_cmd=" ".join(cmd),
                 stdout=result.stdout.decode().split("\n"),
                 stderr=result.stderr.decode().split("\n"),
             )
@@ -127,8 +131,6 @@ def load_tests() -> Tuple[str, str, List[WebTestConfig]]:
         return json["testFileName"], json["testClassName"], web_test_configs
 
 
-print("Running main function")
-
 if __name__ == "__main__":
 
     if not test_config_file_path.exists():
@@ -139,11 +141,7 @@ if __name__ == "__main__":
 
     shuffle(web_tests)
 
-    print("Executing tests...")
-
     results = execute_tests(test_file_name, test_class_name, web_tests)
 
     with result_file_path.open("w") as result_file:
-        json_dump([r.__dict__ for r in results], result_file, indent=2)
-
-print("Finished")
+        json_dump([r.to_json() for r in results], result_file, indent=2)
