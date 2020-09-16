@@ -12,7 +12,7 @@
     },
     {
       "maxPoints": 2,
-      "testName": "test_register_func",
+      "testName": "test_register_functionality",
       "dependencies": ["test_register_form"]
     },
     {
@@ -21,7 +21,7 @@
     },
     {
       "maxPoints": 2,
-      "testName": "test_login_func",
+      "testName": "test_login_functionality",
       "dependencies": ["test_login_form"]
     },
     {

@@ -15,7 +15,7 @@ register_url: str = f"{base_url}/register"
 
 default_driver_options: ChromeOptions = ChromeOptions()
 default_driver_options.headless = True
-default_driver_options.add_argument('--no-sandbox')
+default_driver_options.add_argument("--no-sandbox")
 
 
 class MyTest(TestCase):
@@ -37,11 +37,11 @@ class MyTest(TestCase):
         return all_elements[0]
 
     def __test_element__(
-            self,
-            xpath: str,
-            search_context: Optional[WebElement] = None,
-            text: Optional[str] = None,
-            attributes: Optional[Dict[str, Any]] = None,
+        self,
+        xpath: str,
+        search_context: Optional[WebElement] = None,
+        text: Optional[str] = None,
+        attributes: Optional[Dict[str, Any]] = None,
     ) -> WebElement:
         web_element: WebElement = self.__find_distinct_element__(xpath, search_context)
 
@@ -133,7 +133,11 @@ class MyTest(TestCase):
         self.assertEqual(index_url, self.web_driver.current_url)
 
     def test_index(self):
-        self.fail('TODO!')
+        self.__perform_login__()
+
+        self.web_driver.get(base_url)
+
+        self.__test_element__("//h1", text="Startseite")
 
 
 if __name__ == "__main__":

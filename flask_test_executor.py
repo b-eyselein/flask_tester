@@ -71,7 +71,7 @@ class WebTestResult:
             "testName": self.test_name,
             "successful": self.successful,
             "stdout": self.stdout,
-            "stderr": self.stderr
+            "stderr": self.stderr,
         }
 
 
