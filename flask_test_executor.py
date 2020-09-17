@@ -12,7 +12,7 @@ result_file_path: Path = Path.cwd() / "result.json"
 
 
 class WebTestConfigJson(TypedDict):
-    maxPoints: int
+    id: int
     testName: str
     dependencies: Optional[List[str]]
 
@@ -32,7 +32,7 @@ class TestStatus(Enum):
 
 @dataclass()
 class WebTestConfig:
-    max_points: int
+    id: int
     test_name: str
     status: TestStatus = TestStatus.Ready
 
@@ -59,7 +59,7 @@ class WebTestConfig:
 
 @dataclass()
 class WebTestResult:
-    max_points: int
+    test_id: int
     test_name: str
     successful: bool
     stdout: List[str]
@@ -67,7 +67,7 @@ class WebTestResult:
 
     def to_json(self) -> Dict:
         return {
-            "maxPoints": self.max_points,
+            "testId": self.test_id,
             "testName": self.test_name,
             "successful": self.successful,
             "stdout": self.stdout,
@@ -84,34 +84,39 @@ def execute_tests(test_file_name: str, test_class_name: str, tests: List[WebTest
         current_test: WebTestConfig = runnable_tests.pop()
 
         # execute tests
-        cmd: List[str] = [f"python3 -m unittest {test_file_name}.{test_class_name}.{current_test.test_name}"]
-
-        result: CompletedProcess = subprocess_run(cmd, shell=True, capture_output=True)
-
-        successful: bool = result.returncode == 0
-
-        results.append(
-            WebTestResult(
-                max_points=current_test.max_points,
-                test_name=current_test.test_name,
-                successful=successful,
-                stdout=result.stdout.decode().split("\n"),
-                stderr=result.stderr.decode().split("\n"),
-            )
-        )
-
-        # set result
-        current_test.status = TestStatus.Success if successful else TestStatus.Failure
+        current_result = execute_test(current_test, test_class_name, test_file_name)
 
         # update dependents
         for other_test in current_test.dependents:
-            if not successful:
+            if not current_result.successful:
                 other_test.needs_to_be_skipped()
-
-            if other_test.can_be_run():
+            elif other_test.can_be_run():
                 runnable_tests.append(other_test)
 
+        results.append(current_result)
+
     return results
+
+
+def execute_test(current_test: WebTestConfig, test_class_name: str, test_file_name: str) -> WebTestResult:
+    result: CompletedProcess = subprocess_run(
+        [f"python3 -m unittest {test_file_name}.{test_class_name}.{current_test.test_name}"],
+        shell=True,
+        capture_output=True,
+    )
+
+    successful: bool = result.returncode == 0
+
+    # set result
+    current_test.status = TestStatus.Success if successful else TestStatus.Failure
+
+    return WebTestResult(
+        test_id=current_test.id,
+        test_name=current_test.test_name,
+        successful=successful,
+        stdout=result.stdout.decode().split("\n"),
+        stderr=result.stderr.decode().split("\n"),
+    )
 
 
 def load_tests() -> Tuple[str, str, List[WebTestConfig]]:
@@ -123,7 +128,7 @@ def load_tests() -> Tuple[str, str, List[WebTestConfig]]:
         for test_config_json in json["tests"]:
             web_test_configs.append(
                 WebTestConfig(
-                    max_points=test_config_json["maxPoints"],
+                    id=test_config_json["id"],
                     test_name=test_config_json["testName"],
                     dependencies=[
                         t_x for t_x in web_test_configs if t_x.test_name in test_config_json.get("dependencies", [])
@@ -140,11 +145,11 @@ if __name__ == "__main__":
         print(f"Test config file {test_config_file_path} does not exist!", file=stderr)
         exit(1)
 
-    test_file_name, test_class_name, web_tests = load_tests()
+    the_test_file_name, the_test_class_name, web_tests = load_tests()
 
     shuffle(web_tests)
 
-    all_results = execute_tests(test_file_name, test_class_name, web_tests)
+    all_results = execute_tests(the_test_file_name, the_test_class_name, web_tests)
 
     with result_file_path.open("w") as result_file:
         json_dump({"results": [r.to_json() for r in all_results]}, result_file, indent=2)

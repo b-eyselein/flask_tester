@@ -39,6 +39,7 @@ if build_image:
     subprocess_run("docker image prune -f", shell=True)
     # client.images.prune()
 
+print("Running tester container!")
 tester_container: Container = client.containers.run(
     image=tester_image_name,
     mounts=[
@@ -53,5 +54,5 @@ tester_container: Container = client.containers.run(
 # stop and remove tester container
 tester_container.wait(timeout=max_runtime_seconds)
 
-if client.containers.get(tester_container.id):
-    tester_container.remove()
+#if client.containers.get(tester_container.id):
+#    tester_container.remove()

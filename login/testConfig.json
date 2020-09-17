@@ -3,29 +3,29 @@
   "testClassName": "MyTest",
   "tests": [
     {
-      "maxPoints": 1,
+      "id": 1,
       "testName": "test_redirect_to_login"
     },
     {
-      "maxPoints": 3,
+      "id": 2,
       "testName": "test_register_form"
     },
     {
-      "maxPoints": 2,
+      "id": 3,
       "testName": "test_register_functionality",
       "dependencies": ["test_register_form"]
     },
     {
-      "maxPoints": 3,
+      "id": 4,
       "testName": "test_login_form"
     },
     {
-      "maxPoints": 2,
+      "id": 5,
       "testName": "test_login_functionality",
       "dependencies": ["test_login_form"]
     },
     {
-      "maxPoints": 3,
+      "id": 6,
       "testName": "test_index",
       "dependencies": ["test_login_func"]
     }

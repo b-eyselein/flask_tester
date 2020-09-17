@@ -15,7 +15,7 @@
     "WebTestConfig": {
       "type": "object",
       "properties": {
-        "maxPoints": {"type": "number"},
+        "id": {"type": "number"},
         "testName": {"type": "string"},
         "dependencies": {
           "type": "array",
