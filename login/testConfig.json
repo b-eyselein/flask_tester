@@ -28,6 +28,11 @@
       "id": 6,
       "testName": "test_index",
       "dependencies": ["test_login_func"]
+    },
+    {
+      "id": 7,
+      "testName": "test_logout",
+      "dependencies": ["test_login_func"]
     }
   ]
 }

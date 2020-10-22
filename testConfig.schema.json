@@ -23,7 +23,7 @@
           "additionalItems": false
         }
       },
-      "required": ["maxPoints", "testName"],
+      "required": ["id", "testName"],
       "additionalProperties": false
     }
   }

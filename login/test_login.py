@@ -139,6 +139,9 @@ class MyTest(TestCase):
 
         self.__test_element__("//h1", text="Startseite")
 
+    def test_logout(self):
+        self.fail("TODO!")
+
 
 if __name__ == "__main__":
     unittest_main()

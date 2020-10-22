@@ -151,5 +151,11 @@ if __name__ == "__main__":
 
     all_results = execute_tests(the_test_file_name, the_test_class_name, web_tests)
 
+    all_results.sort(key=lambda r: r.test_id)
+
     with result_file_path.open("w") as result_file:
         json_dump({"results": [r.to_json() for r in all_results]}, result_file, indent=2)
+
+    all_results_successful: bool = all(result.successful for result in all_results)
+
+    exit(0 if all_results_successful else 1)
