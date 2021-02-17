@@ -152,4 +152,4 @@ if __name__ == "__main__":
     all_results = execute_tests(the_test_file_name, the_test_class_name, web_tests)
 
     with result_file_path.open("w") as result_file:
-        json_dump({"results": [r.to_json() for r in all_results]}, result_file, indent=2)
+        json_dump([r.to_json() for r in all_results], result_file, indent=2)
