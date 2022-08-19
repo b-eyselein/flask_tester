@@ -1,0 +1,227 @@
+{
+  "baseUrl" : "http://localhost:5000",
+  "tests" : {
+    "redirectToLogin" : {
+      "url" : "/",
+      "dependsOnSavedActions" : [ ],
+      "dependsOn" : [ ],
+      "initialPageSpec" : [ {
+        "_type" : "UrlSpec",
+        "awaitedUrl" : "/login"
+      } ],
+      "actions" : [ ]
+    },
+    "registerForm" : {
+      "url" : "/register",
+      "dependsOnSavedActions" : [ ],
+      "dependsOn" : [ ],
+      "initialPageSpec" : [ {
+        "_type" : "FlaskElementSpec",
+        "xpathQuery" : "//form",
+        "classNames" : [ ],
+        "attributes" : {
+          "method" : {
+            "awaitedText" : "post"
+          },
+          "action" : {
+            "awaitedText" : "/register",
+            "modifier" : "Url"
+          }
+        },
+        "children" : [ {
+          "xpathQuery" : ".//input[@type='text']",
+          "classNames" : [ ],
+          "attributes" : {
+            "name" : {
+              "awaitedText" : "username"
+            },
+            "required" : {
+              "awaitedText" : "true"
+            }
+          },
+          "children" : [ ]
+        }, {
+          "xpathQuery" : ".//input[@name='password']",
+          "classNames" : [ ],
+          "attributes" : {
+            "type" : {
+              "awaitedText" : "password"
+            },
+            "required" : {
+              "awaitedText" : "true"
+            }
+          },
+          "children" : [ ]
+        }, {
+          "xpathQuery" : ".//input[@name='passwordRepeat']",
+          "classNames" : [ ],
+          "attributes" : {
+            "type" : {
+              "awaitedText" : "password"
+            },
+            "required" : {
+              "awaitedText" : "true"
+            }
+          },
+          "children" : [ ]
+        }, {
+          "xpathQuery" : ".//button",
+          "classNames" : [ ],
+          "textContent" : {
+            "awaitedText" : "Registrieren"
+          },
+          "attributes" : { },
+          "children" : [ ]
+        } ]
+      } ],
+      "actions" : [ {
+        "action" : {
+          "_type" : "FlaskSendKeysAction",
+          "xpathQuery" : "//form//input[@name='username']",
+          "keysToSend" : "test"
+        },
+        "postConditions" : [ ]
+      }, {
+        "action" : {
+          "_type" : "FlaskSendKeysAction",
+          "xpathQuery" : "//form//input[@name='password']",
+          "keysToSend" : "1234"
+        },
+        "postConditions" : [ ]
+      }, {
+        "action" : {
+          "_type" : "FlaskSendKeysAction",
+          "xpathQuery" : "//form//input[@name='passwordRepeat']",
+          "keysToSend" : "1234"
+        },
+        "postConditions" : [ ]
+      }, {
+        "action" : {
+          "_type" : "FlaskClickAction",
+          "xpathQuery" : "//form//button"
+        },
+        "postConditions" : [ {
+          "_type" : "UrlSpec",
+          "awaitedUrl" : "/"
+        } ]
+      } ]
+    },
+    "loginForm" : {
+      "url" : "/login",
+      "dependsOnSavedActions" : [ ],
+      "dependsOn" : [ ],
+      "initialPageSpec" : [ {
+        "_type" : "FlaskElementSpec",
+        "xpathQuery" : "//form",
+        "classNames" : [ ],
+        "attributes" : {
+          "method" : {
+            "awaitedText" : "post"
+          },
+          "action" : {
+            "awaitedText" : "/login"
+          }
+        },
+        "children" : [ {
+          "xpathQuery" : ".//input[@type='text']",
+          "classNames" : [ ],
+          "attributes" : {
+            "name" : {
+              "awaitedText" : "username"
+            },
+            "required" : {
+              "awaitedText" : "true"
+            }
+          },
+          "children" : [ ]
+        }, {
+          "xpathQuery" : ".//input[@type='password']",
+          "classNames" : [ ],
+          "attributes" : {
+            "name" : {
+              "awaitedText" : "password"
+            },
+            "required" : {
+              "awaitedText" : "true"
+            }
+          },
+          "children" : [ ]
+        }, {
+          "xpathQuery" : ".//button",
+          "classNames" : [ ],
+          "textContent" : {
+            "awaitedText" : "Einloggen"
+          },
+          "attributes" : { },
+          "children" : [ ]
+        } ]
+      } ],
+      "actions" : [ {
+        "action" : {
+          "_type" : "FlaskSendKeysAction",
+          "xpathQuery" : "//form//input[@name='username']",
+          "keysToSend" : "test"
+        },
+        "postConditions" : [ ]
+      }, {
+        "action" : {
+          "_type" : "FlaskSendKeysAction",
+          "xpathQuery" : "//form//input[@name='password']",
+          "keysToSend" : "1234"
+        },
+        "postConditions" : [ ]
+      }, {
+        "action" : {
+          "_type" : "FlaskClickAction",
+          "xpathQuery" : "//form//button"
+        },
+        "postConditions" : [ ]
+      } ]
+    },
+    "index" : {
+      "url" : "/",
+      "dependsOnSavedActions" : [ "login" ],
+      "dependsOn" : [ ],
+      "initialPageSpec" : [ ],
+      "actions" : [ ]
+    }
+  },
+  "savedActions" : {
+    "login" : {
+      "startUrl" : "/login",
+      "actions" : [ {
+        "_type" : "FlaskSendKeysAction",
+        "xpathQuery" : "//form//input[@name='username']",
+        "keysToSend" : "test"
+      }, {
+        "_type" : "FlaskSendKeysAction",
+        "xpathQuery" : "//form//input[@name='password']",
+        "keysToSend" : "1234"
+      }, {
+        "_type" : "FlaskClickAction",
+        "xpathQuery" : "//form//button"
+      } ],
+      "dependsOn" : [ "loginForm" ]
+    },
+    "register" : {
+      "startUrl" : "/register",
+      "actions" : [ {
+        "_type" : "FlaskSendKeysAction",
+        "xpathQuery" : "//form//input[@name='username']",
+        "keysToSend" : "test"
+      }, {
+        "_type" : "FlaskSendKeysAction",
+        "xpathQuery" : "//form//input[@name='password']",
+        "keysToSend" : "1234"
+      }, {
+        "_type" : "FlaskSendKeysAction",
+        "xpathQuery" : "//form//input[@name='passwordRepeat']",
+        "keysToSend" : "1234"
+      }, {
+        "_type" : "FlaskClickAction",
+        "xpathQuery" : "//form//button"
+      } ],
+      "dependsOn" : [ "registerForm" ]
+    }
+  }
+}
