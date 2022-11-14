@@ -10,6 +10,6 @@ RUN apk update && apk upgrade && \
   pip install --upgrade pip && \
   pip install flask bcrypt selenium
 
-COPY entrypoint.sh flask_test_executor.py $WORKDIR
+COPY entrypoint.sh src/flask_test_executor.py $WORKDIR
 
 ENTRYPOINT ["/bin/bash", "./entrypoint.sh"]

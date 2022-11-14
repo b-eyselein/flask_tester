@@ -2,6 +2,7 @@ from typing import Optional, Union, Dict, Any, List
 from unittest import main as unittest_main, TestCase
 
 from selenium.webdriver import Chrome, ChromeOptions
+from selenium.webdriver.common.by import By
 from selenium.webdriver.remote.webdriver import WebDriver
 from selenium.webdriver.remote.webelement import WebElement
 from selenium.webdriver.support import expected_conditions
@@ -30,7 +31,7 @@ class MyTest(TestCase):
     def __find_distinct_element__(self, xpath: str, search_path: Optional[WebElement] = None) -> WebElement:
         search_context: Union[WebElement, WebDriver] = search_path if search_path is not None else self.web_driver
 
-        all_elements: List[WebElement] = search_context.find_elements_by_xpath(xpath)
+        all_elements: List[WebElement] = search_context.find_elements(By.XPATH, xpath)
 
         self.assertEqual(1, len(all_elements))
 
@@ -141,4 +142,4 @@ class MyTest(TestCase):
 
 
 if __name__ == "__main__":
-    unittest_main()
+    unittest_main(warnings="ignore")

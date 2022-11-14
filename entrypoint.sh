@@ -3,7 +3,7 @@
 # run server in background
 cd ./app || exit
 
-python server.py > ../server_logs.txt 2>&1 &
+python server.py >../server_logs.txt 2>&1 &
 
 sleep 1
 

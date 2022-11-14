@@ -1,9 +1,13 @@
 # server
-flask
-bcrypt
+flask==2.2.2
+bcrypt==4.0.0
 
 # test
-selenium
+selenium==4.4.3
 
-# execution
-docker
+# local test execution
+docker==6.0.0
+termcolor==1.1.0
+
+# formatter
+black==22.8.0

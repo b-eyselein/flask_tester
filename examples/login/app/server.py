@@ -30,7 +30,10 @@ def route_register():
 
         if username is None or password is None or password != password_repeat:
             return render_template(
-                "register.html", username=username, password=password, password_repeat=password_repeat,
+                "register.html",
+                username=username,
+                password=password,
+                password_repeat=password_repeat,
             )
 
         pw_hash: str = hashpw(password.encode(), gensalt()).decode()
